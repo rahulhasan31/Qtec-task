@@ -90,7 +90,7 @@ const TodoApp = () => {
         <h2 className='text-red-500 text-4xl mt-3 font-bold'>Tasks</h2>
         <p className='text-red-600 text-xl font-medium'>Total Tasks: {tasks.length}</p>
         <p className='text-green-900 font-medium text-xl'>Completed Tasks: {tasks.filter((task) => task.completed).length}</p>
-        <label htmlFor="filter" className='text-orange-500 text-2xl font-semibold me-3'>Filter by Priority:</label>
+        <label htmlFor="filter" className='text-orange-600 text-2xl font-semibold me-3'>Filter by Priority:</label>
         
         <select id="filter" value={filter} onChange={handleFilterChange} className="select select-success w-full max-w-32 h-10 mt-3">
         <option value="all">All</option>
