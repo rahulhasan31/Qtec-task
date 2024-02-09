@@ -6,6 +6,8 @@ const TodoApp = () => {
     const [newTask, setNewTask] = useState('');
     const [priority, setPriority] = useState('low');
     const [filter, setFilter] = useState('all')
+    const [editingTaskId, setEditingTaskId] = useState(null);
+    const [editingTaskText, setEditingTaskText] = useState('');
   console.log(tasks);
     useEffect(() => {
         const storedTasks = JSON.parse(localStorage.getItem('tasks'));
@@ -60,7 +62,27 @@ const TodoApp = () => {
         return task.priority === filter;
       });
    
-      
+      const handleEdit = (id, text) => {
+        setEditingTaskId(id);
+        setEditingTaskText(text);
+      };
+    
+      const handleEditChange = (e) => {
+        setEditingTaskText(e.target.value);
+      };
+    
+      const handleSaveEdit = (id) => {
+        const updatedTasks = tasks.map((task) =>
+          task.id === id ? { ...task, text: editingTaskText } : task
+        );
+        setTasks(updatedTasks);
+        setEditingTaskId(null);
+      };
+    
+      const cancelEdit = () => {
+        setEditingTaskId(null);
+        setEditingTaskText('');
+      };
     return (
         <div>
              <div className="bg-gray-300 h-screen">
@@ -107,6 +129,18 @@ const TodoApp = () => {
 
           
             <li key={task.id} className={task.completed ? 'completed' : ''}>
+               {editingTaskId === task.id ? (
+                <>
+                  <input
+                   className="input input-bordered mt-4 me-3"
+                    type="text"
+                    value={editingTaskText}
+                    onChange={handleEditChange}
+                  />
+                  <button className='btn  btn-primary ms-2' onClick={() => handleSaveEdit(task.id)}>Save</button>
+                  <button className='btn  btn-warning me-5' onClick={cancelEdit}>Cancel</button>
+                </>
+              ) :
      <div className='text-center'>
      {
         task.priority==="low" ?<>
@@ -120,7 +154,9 @@ const TodoApp = () => {
         <td className={`font-medium  text-xl`}>{task.text}</td>
         <td> <input type="checkbox" className="toggle toggle-success" checked={task.completed}
                 onChange={() => toggleTaskStatus(task.id)}/></td>
-        <td><button className="btn  btn-primary" onClick={() => deleteTask(task.id)}>Delete</button></td>
+        <td><button className="btn  btn-primary" onClick={() => deleteTask(task.id)}>Delete</button>
+        <button className="btn  btn-accent ms-2"  onClick={() => handleEdit(task.id, task.text)}>Edit</button>
+        </td>
       </tr>
      
     </tbody>
@@ -142,7 +178,9 @@ const TodoApp = () => {
         <td className={`font-medium  text-xl`}>{task.text}</td>
         <td> <input type="checkbox" className="toggle toggle-success" checked={task.completed}
                 onChange={() => toggleTaskStatus(task.id)}/></td>
-        <td><button className="btn  btn-secondary" onClick={() => deleteTask(task.id)}>Delete</button></td>
+        <td><button className="btn  btn-secondary" onClick={() => deleteTask(task.id)}>Delete</button>
+        <button className="btn  btn-accent ms-2"  onClick={() => handleEdit(task.id, task.text)}>Edit</button>
+        </td>
       </tr>
      
     </tbody>
@@ -162,7 +200,10 @@ const TodoApp = () => {
               <td className={`font-medium  text-xl`}>{task.text}</td>
               <td> <input type="checkbox" className="toggle toggle-success" checked={task.completed}
                       onChange={() => toggleTaskStatus(task.id)}/></td>
-              <td><button className="btn  btn-accent" onClick={() => deleteTask(task.id)}>Delete</button></td>
+              <td>
+                <button className="btn  btn-accent" onClick={() => deleteTask(task.id)}>Delete</button>
+                <button className="btn  btn-accent ms-2"  onClick={() => handleEdit(task.id, task.text)}>Edit</button>
+                </td>
             </tr>
            
           </tbody>
@@ -171,7 +212,7 @@ const TodoApp = () => {
       }
      </div>
              
-            </li>
+        }    </li>
           ))}
         </ul>
       </div>
